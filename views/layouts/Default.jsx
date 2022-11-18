@@ -12,6 +12,7 @@ function Default(html){
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css" integrity="sha512-Ojqt7YpXqYM6//AdMhErV3ot38rYgGF5QLJEwx7zhesjL9VqfhWiRz/dWK22hsn96RNz0CLl85+pg1P0BmfgVQ==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
 
             <link rel="stylesheet" href="/main.css" />
+            <link rel="shortcut icon" type="image/jpg" href="../images/favicon.ico" />
         </head>
         <body>
             <div className="wrapper">
