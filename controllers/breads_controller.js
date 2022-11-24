@@ -3,6 +3,7 @@ const express = require("express");
 const breads = express.Router();
 
 const Bread = require('../models/bread');
+const BreadSeeder = require('../models/bread_seeder');
 
 // * Index
 breads.get('/', (req, res) => {
@@ -25,6 +26,8 @@ breads.get('/new', (req, res) => {
 breads.get('/:id', async (req, res) => {
     await Bread.findById(req.params.id)
         .then(foundBread => {
+            console.log(foundBread.getBakedBy());
+            
             res.render('show', {
                 bread: foundBread,
                 index: req.params.id
@@ -32,6 +35,34 @@ breads.get('/:id', async (req, res) => {
         }).catch(err => {
             res.render('404');
         });
+});
+
+// * EDIT
+breads.get('/:id/edit', (req, res) => {
+    Bread.findById(req.params.id)
+        .then(foundBread => {
+            res.render('edit', {
+                bread: foundBread
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('404')
+        })
+});
+
+// * UPDATE
+breads.put('/:id', (req, res) => {
+    if(req.body.hasGluten === 'on'){
+      req.body.hasGluten = true
+    } else {
+      req.body.hasGluten = false
+    }
+
+    Bread.findByIdAndUpdate(req.params.id, req.body, { new: true }) 
+      .then(updatedBread => {
+        res.redirect(`/breads/${req.params.id}`) 
+      })
 });
 
 // * Create
@@ -46,9 +77,27 @@ breads.post('/', (req, res) => {
     res.redirect('/breads');
 });
 
-breads.delete('/:indexArray', (req, res) => {
-    Bread.splice(req.params.indexArray, 1);
-    res.redirect(303, '/breads');
-})
+// * DELETE
+breads.delete('/:id', (req, res) => {
+    Bread.findByIdAndDelete(req.params.id)
+        .then(bread => {
+            res.redirect(303, '/breads');
+        })
+        .catch(err => {
+            console.log(err)
+            res.render('404')
+        });    
+});
+
+breads.get('/data/seed', (req, res) => {
+    Bread.insertMany(BreadSeeder)
+        .then(createdBreads => {
+            res.redirect(200, '/breads');
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('404');
+        })
+});
 
 module.exports = breads;
