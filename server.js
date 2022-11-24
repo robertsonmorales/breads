@@ -1,10 +1,23 @@
 const express = require("express");
+const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const app = express();
 
-// * CONFIGURATION
 require("dotenv").config();
+
 const PORT = process.env.PORT;
-let app = express();
+const connectionString = process.env.MONGO_URI;
+// * MONGODB
+mongoose.connect(connectionString, {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true
+}, (err) => {
+    if(err){
+        console.log('error in connection')
+    }else {
+        console.log('connected to ' + process.env.MONGO_URI)
+    }
+});
 
 // * MIDDLEWARE
 app.set('views', __dirname + '/views');

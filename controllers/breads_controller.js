@@ -6,10 +6,14 @@ const Bread = require('../models/bread');
 
 // * Index
 breads.get('/', (req, res) => {
-    res.render("index", {
-        breads: Bread,
-        title: 'Index page'
-    });
+    Bread.find()
+        .then(foundBreads => {
+            res.render("index", {
+                breads: foundBreads,
+                title: 'Index page'
+            });
+        });
+
 });
 
 // * New
@@ -18,28 +22,27 @@ breads.get('/new', (req, res) => {
 });
 
 // * Show
-breads.get('/:arrayIndex', (req, res) => {
-    if(Bread[req.params.arrayIndex]){
-        res.render('show', {
-            bread: Bread[req.params.arrayIndex],
-            index: req.params.arrayIndex
+breads.get('/:id', async (req, res) => {
+    await Bread.findById(req.params.id)
+        .then(foundBread => {
+            res.render('show', {
+                bread: foundBread,
+                index: req.params.id
+            });
+        }).catch(err => {
+            res.render('404');
         });
-    }else{
-        res.render('404');
-    }
 });
 
 // * Create
 breads.post('/', (req, res) => {
-    console.log(req.body);
-
     if(req.body.hasGluten === 'on'){
         req.body.hasGluten = true;
     } else {
         req.body.hasGluten = false;
     }
 
-    Bread.push(req.body);
+    Bread.create(req.body);
     res.redirect('/breads');
 });
 
