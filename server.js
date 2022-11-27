@@ -28,13 +28,13 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-
 // * ROUTES
 app.get('/', (req, res) => {
     res.send("This is the index route");
 });
 
 app.use('/breads', require('./controllers/breads_controller'));
+app.use('/bakers', require('./controllers/bakers_controller'));
 
 app.get('*', (req, res) => {
     res.render('404');

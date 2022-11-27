@@ -1,8 +1,7 @@
 const React = require('react');
 const Default = require('./layouts/Default');
 
-function Show({bread, index}){
-    console.log(bread)
+function Show({bread}){
     return (
         <Default>
             <main className='text-center'>
@@ -14,10 +13,10 @@ function Show({bread, index}){
                         : <span> does not </span>
                     } have glutten</p>
                 <img src={bread.image} alt={bread.name} />
-                <p>Baked by {bread.getBakedBy()}</p>
+                <p>{bread.getBakedBy()}</p>
                 <br />
-                <a href={`/breads/${bread._id}/edit`}>EDIT</a>            
-                <form action={`/breads/${bread._id}?_method=DELETE`} method="POST">
+                <a href={`/breads/${bread.id}/edit`}>EDIT</a>            
+                <form action={`/breads/${bread.id}?_method=DELETE`} method="POST">
                     <button type='submit'>DELETE</button>
                 </form>
 

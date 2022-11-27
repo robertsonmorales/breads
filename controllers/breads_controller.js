@@ -4,33 +4,44 @@ const breads = express.Router();
 
 const Bread = require('../models/bread');
 const BreadSeeder = require('../models/bread_seeder');
+const Baker = require('../models/baker');
 
 // * Index
+// Index:
 breads.get('/', (req, res) => {
-    Bread.find()
+    Baker.find()
+      .then(foundBakers => {
+        Bread.find()
         .then(foundBreads => {
-            res.render("index", {
+            res.render('index', {
                 breads: foundBreads,
-                title: 'Index page'
-            });
-        });
-
-});
+                bakers: foundBakers,
+                title: 'Index Page'
+            })
+        })
+      })
+})  
 
 // * New
 breads.get('/new', (req, res) => {
-    res.render('new');
+    Baker.find()
+        .then(foundBaker => {
+            res.render('new', {
+                bakers: foundBaker
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
 });
 
 // * Show
 breads.get('/:id', async (req, res) => {
     await Bread.findById(req.params.id)
+        .populate('baker')
         .then(foundBread => {
-            console.log(foundBread.getBakedBy());
-            
             res.render('show', {
-                bread: foundBread,
-                index: req.params.id
+                bread: foundBread
             });
         }).catch(err => {
             res.render('404');
@@ -39,16 +50,23 @@ breads.get('/:id', async (req, res) => {
 
 // * EDIT
 breads.get('/:id/edit', (req, res) => {
-    Bread.findById(req.params.id)
-        .then(foundBread => {
-            res.render('edit', {
-                bread: foundBread
-            });
+    Baker.find()
+        .then(foundBakers => {
+            Bread.findById(req.params.id)
+                .then(foundBread => {
+                    res.render('edit', {
+                        bread: foundBread,
+                        bakers: foundBakers
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.render('404')
+                })
         })
         .catch(err => {
             console.log(err);
-            res.render('404')
-        })
+        });
 });
 
 // * UPDATE
